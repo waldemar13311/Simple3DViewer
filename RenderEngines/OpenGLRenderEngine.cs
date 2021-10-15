@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using GlmNet;
+using GlmSharp;
 using SharpGL.WPF;
 using Simple3DViewer.ModelTypes;
 using SharpGL.Shaders;
@@ -39,8 +39,8 @@ namespace Simple3DViewer.RenderEngines
         public void Init(System.Windows.Controls.UserControl renderControl)
         {
             dataGetterForShader.Model = Model;
-
-            CameraYPos = -(dataGetterForShader.LenghZ / (2.0f * glm.tan(glm.radians(45.0f / 2.0f)))) - dataGetterForShader.LenghZ;
+            
+            CameraYPos = -(dataGetterForShader.LenghZ / (2.0f * glm.Tan(glm.Radians(45.0f / 2.0f)))) - dataGetterForShader.LenghZ;
             gl = (renderControl as OpenGLControl)?.OpenGL;
 
             gl.Enable(SharpGL.OpenGL.GL_MULTISAMPLE);
@@ -49,19 +49,22 @@ namespace Simple3DViewer.RenderEngines
             gl.ClearColor(0.4f, 0.6f, 0.9f, 0.0f);
 
             var vertexShaderSource = @"#version 330 core
-
 in vec3 position;
 in vec3 normal;  
 
 uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
+uniform mat3 normalMatrix;
 
 out vec3 n;
 
 void main(void) {
-    //n = normalize(normal);
-	gl_Position = projection * view * model * vec4(position, 1.0);
+    //n = normalize(normalMatrix * normal);
+    //n = normalize(normalMatrix * vec3(1.0));
+    //vec3 qwer = normal;
+    //if(normal.x == -111234)
+        gl_Position = projection * view * model * vec4(position, 1.0);
 }";
             var fragmentShaderSource = @"#version 330 core
 in vec3 n;
@@ -69,7 +72,6 @@ in vec3 n;
 out vec4 FragColor;
 
 void main(void) {
-    
     float ambient = 0.1;
 	vec3 colorOfLight = vec3(1, 1, 1);
 	vec3 colorOfObject = vec3(0.8, 0.8, 0.8);
@@ -102,10 +104,10 @@ void main(void) {
             vertexDataBuffer.Bind(gl);
             vertexDataBuffer.SetData(gl, 0, vertices, false, 3);
 
-            var colourDataBuffer = new VertexBuffer();
-            colourDataBuffer.Create(gl);
-            colourDataBuffer.Bind(gl);
-            colourDataBuffer.SetData(gl, 1, normals, false, 3);
+            var normalsDataBuffer = new VertexBuffer();
+            normalsDataBuffer.Create(gl);
+            normalsDataBuffer.Bind(gl);
+            normalsDataBuffer.SetData(gl, 1, normals, false, 3);
 
             vertexBufferArray.Unbind(gl);
         }
@@ -116,34 +118,36 @@ void main(void) {
             gl.ClearColor(0.4f, 0.6f, 0.9f, 0.0f);
 
             // model block
-            model = new mat4(1.0f);
-            model = glm.rotate(model, glm.radians(RotationToX), new vec3(1.0f, 0.0f, 0.0f));
-            model = glm.rotate(model, glm.radians(RotationToY), new vec3(0.0f, 0.0f, 1.0f));
-            var vecOffsetToCenter = new vec3(
-                -dataGetterForShader.VecOffsetToCenter.X,
-                -dataGetterForShader.VecOffsetToCenter.Y, 
-                -dataGetterForShader.VecOffsetToCenter.Z);
-            model = glm.translate(model, vecOffsetToCenter);
+            model = mat4.Identity;
+            
+            //model = glm.Rotated(model, glm.Radians(RotationToX), new vec3(1.0f, 0.0f, 0.0f));
+            //model = glm.Rotated(model, glm.Radians(RotationToY), new vec3(0.0f, 0.0f, 1.0f));
+            //var vecOffsetToCenter = new vec3(
+            //    -dataGetterForShader.VecOffsetToCenter.X,
+            //    -dataGetterForShader.VecOffsetToCenter.Y, 
+            //    -dataGetterForShader.VecOffsetToCenter.Z);
+            //model = glm.translate(model, vecOffsetToCenter);
             
             // view
             var cameraPosition = new vec3(_cameraXPos, CameraYPos, _cameraZPos);
             var cameraDirection = new vec3(_cameraXPos, 0.0f, _cameraZPos);
             var cameraDirectionUp = new vec3(0.0f, 0.0f, 1.0f);
-            //
-            view = glm.lookAt(cameraPosition, cameraDirection, cameraDirectionUp);
+            
+            view = mat4.LookAt(cameraPosition, cameraDirection, cameraDirectionUp);
 
             // projection
-            projection = glm.perspective(glm.radians(45.0f), 
+            projection = mat4.Perspective(glm.Radians(45.0f), 
                 Width / Height, 
                 0.1f, 
                 Math.Abs(CameraYPos) + dataGetterForShader.MaxLengh);
 
-
+            var normalMatrix = new mat3(model.Inverse.Transposed);
 
             shaderProgram.Bind(gl);
-            shaderProgram.SetUniformMatrix4(gl, "model", model.to_array());
-            shaderProgram.SetUniformMatrix4(gl, "view", view.to_array());
-            shaderProgram.SetUniformMatrix4(gl, "projection", projection.to_array());
+            shaderProgram.SetUniformMatrix4(gl, "model", model.Values1D);
+            shaderProgram.SetUniformMatrix4(gl, "view", view.Values1D);
+            shaderProgram.SetUniformMatrix4(gl, "projection", projection.Values1D);
+            shaderProgram.SetUniformMatrix4(gl, "normalMatrix", normalMatrix.Values1D);
 
             vertexBufferArray.Bind(gl);
 

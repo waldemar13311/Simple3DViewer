@@ -41,7 +41,7 @@ namespace Simple3DViewer
         public MainWindow()
         {
             InitializeComponent();
-            renderEngine.Model = modelReader.Read(@"C:\Users\walde\3D Objects\pika.stl");
+            renderEngine.Model = modelReader.Read(@"C:\Users\walde\3D Objects\cube.stl");
         }
 
         private void CommandBinding_OnCanExecute(object sender, CanExecuteRoutedEventArgs e)
@@ -121,7 +121,7 @@ namespace Simple3DViewer
                 ((OpenGLRenderEngine)renderEngine).RotationToY = (float)(currentPos.X - p.X);
                 ((OpenGLRenderEngine)renderEngine).RotationToX = (float)(currentPos.Y - p.Y);
 
-                //p = e.GetPosition(this);
+                p = e.GetPosition(this);
             }
         }
     }
