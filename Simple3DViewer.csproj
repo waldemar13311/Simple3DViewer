@@ -1,9 +1,23 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+    
+    <PropertyGroup>
+        <OutputType>WinExe</OutputType>
+        <TargetFramework>net5.0-windows</TargetFramework>
+        <UseWPF>true</UseWPF>
+	    <UseWindowsForms>true</UseWindowsForms>
+    </PropertyGroup>
+    
+    <ItemGroup>
+      <Content Remove="C:\Users\walde\.nuget\packages\sharpgl.winforms\3.1.1\contentFiles\any\netcoreapp3.1\SharpGL.ico" />
+      <Content Remove="C:\Users\walde\.nuget\packages\sharpgl.winforms\3.1.1\contentFiles\any\netcoreapp3.1\SharpGL.png" />
+    </ItemGroup>
 
-  <PropertyGroup>
-    <OutputType>WinExe</OutputType>
-    <TargetFramework>net5.0-windows</TargetFramework>
-    <UseWPF>true</UseWPF>
-  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="GlmNet" Version="0.7.0" />
+    <PackageReference Include="QuantumConcepts.Formats.STL" Version="1.3.1" />
+    <PackageReference Include="SharpGL" Version="3.1.1" />
+    <PackageReference Include="SharpGL.WinForms" Version="3.1.1" />
+    <PackageReference Include="SharpGL.WPF" Version="3.1.1" />
+  </ItemGroup>
 
 </Project>

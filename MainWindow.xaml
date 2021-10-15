@@ -3,10 +3,59 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Simple3DViewer"
+        xmlns:winForms="clr-namespace:SharpGL;assembly=SharpGL.WinForms"
+        xmlns:sharpGL="clr-namespace:SharpGL.WPF;assembly=SharpGL.WPF"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
+        Style="{DynamicResource CustomWindowStyle}"
+        Title="Simple3DViewer" Width="800" Height="700"
+        MouseWheel="MainWindow_OnMouseWheel"
+        MouseLeftButtonDown="MainWindow_OnMouseLeftButtonDown"
+        MouseMove="MainWindow_OnMouseMove"
+        SizeChanged="MainWindow_OnSizeChanged"
+>
+        
+    <Window.CommandBindings>
+        <CommandBinding 
+            Command="ApplicationCommands.Open"
+            CanExecute="CommandBinding_OnCanExecute"
+            Executed="CommandBinding_OnExecuted"            
+            />
+    </Window.CommandBindings>
 
-    </Grid>
+
+<DockPanel LastChildFill="True">
+        
+        <Menu DockPanel.Dock="Top" 
+              HorizontalAlignment="Left" >
+
+            <MenuItem Header="_File" FontSize="16" FontFamily="Segoe UI">
+                <MenuItem Header ="_Load 3D model" Command="Open" />
+            </MenuItem>
+
+        </Menu>
+
+        <!--<WindowsFormsHost>
+            <winForms:OpenGLControl 
+                x:Name="glControl" 
+                FrameRate="120" 
+                DrawFPS="True" 
+                RenderContextType="FBO"
+                OpenGLVersion="OpenGL4_4"
+                OpenGLDraw="GlControl_OnOpenGLDraw"
+                OpenGLInitialized="GlControl_OnOpenGLInitialized"
+                />
+        </WindowsFormsHost>-->
+
+        <sharpGL:OpenGLControl 
+            
+            x:Name="glControl" 
+            FrameRate="120" 
+            DrawFPS="True" 
+            RenderContextType="FBO"
+            OpenGLVersion="OpenGL4_4"
+            OpenGLDraw="GlControl_OnOpenGLDraw"
+            OpenGLInitialized="GlControl_OnOpenGLInitialized" />
+
+    </DockPanel>
 </Window>
+
