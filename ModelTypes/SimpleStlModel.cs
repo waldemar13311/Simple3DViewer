@@ -13,6 +13,6 @@ namespace Simple3DViewer.ModelTypes
             Facets = new Facet[facetsCount];
         }
 
-        public Facet[] Facets { get; }
+        public Facet[] Facets { get; set; }
     }
 }

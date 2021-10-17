@@ -52,6 +52,7 @@
             FrameRate="120" 
             DrawFPS="True" 
             RenderContextType="FBO"
+            
             OpenGLVersion="OpenGL4_4"
             OpenGLDraw="GlControl_OnOpenGLDraw"
             OpenGLInitialized="GlControl_OnOpenGLInitialized" />

@@ -10,7 +10,7 @@ namespace Simple3DViewer.RenderEngines
 {
     internal interface IRenderEngine
     {
-        IModel Model { set; }
+        IModel Model { set; get; }
             
         float Width { set; }
         float Height { set; }

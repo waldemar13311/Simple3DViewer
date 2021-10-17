@@ -22,6 +22,7 @@ using SharpGL;
 using SharpGL.Shaders;
 using SharpGL.WPF;
 using Simple3DViewer.ModelsReaders;
+using Simple3DViewer.ModelTypes;
 using Simple3DViewer.RenderEngines;
 using MessageBox = System.Windows.MessageBox;
 using MouseEventArgs = System.Windows.Input.MouseEventArgs;
@@ -42,6 +43,13 @@ namespace Simple3DViewer
         {
             InitializeComponent();
             renderEngine.Model = modelReader.Read(@"C:\Users\walde\3D Objects\cube.stl");
+            //renderEngine.Model = new SimpleStlModel(1);
+            //renderEngine.Model.Facets[0].Vertexes = new Vector3[]
+            //{
+            //    new Vector3(0f, 0f, 50.5f),
+            //    new Vector3(0f, 0f, 0f),
+            //    new Vector3(50.5f, 0f, 0.0f), 
+            //};
         }
 
         private void CommandBinding_OnCanExecute(object sender, CanExecuteRoutedEventArgs e)
@@ -118,11 +126,13 @@ namespace Simple3DViewer
             if (e.LeftButton == MouseButtonState.Pressed)
             {
                 var currentPos = e.GetPosition(this);
-                ((OpenGLRenderEngine)renderEngine).RotationToY = (float)(currentPos.X - p.X);
-                ((OpenGLRenderEngine)renderEngine).RotationToX = (float)(currentPos.Y - p.Y);
 
-                p = e.GetPosition(this);
+                ((OpenGLRenderEngine)renderEngine).RotationToY += (float)(currentPos.X - p.X);
+                ((OpenGLRenderEngine)renderEngine).RotationToX += (float)(currentPos.Y - p.Y);
+
+                p = currentPos;
             }
+
         }
     }
 }
