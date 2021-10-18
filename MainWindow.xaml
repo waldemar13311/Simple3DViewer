@@ -7,11 +7,14 @@
         xmlns:sharpGL="clr-namespace:SharpGL.WPF;assembly=SharpGL.WPF"
         mc:Ignorable="d"
         Style="{DynamicResource CustomWindowStyle}"
-        Title="Simple3DViewer" Width="800" Height="700"
+        Title="Simple3DViewer" 
+        
+        Width="800" Height="700"
+        MinWidth="450" MinHeight="550" 
+
         MouseWheel="MainWindow_OnMouseWheel"
-        MouseLeftButtonDown="MainWindow_OnMouseLeftButtonDown"
-        MouseMove="MainWindow_OnMouseMove"
         SizeChanged="MainWindow_OnSizeChanged"
+
 >
         
     <Window.CommandBindings>
@@ -34,28 +37,19 @@
 
         </Menu>
 
-        <!--<WindowsFormsHost>
-            <winForms:OpenGLControl 
-                x:Name="glControl" 
-                FrameRate="120" 
-                DrawFPS="True" 
-                RenderContextType="FBO"
-                OpenGLVersion="OpenGL4_4"
-                OpenGLDraw="GlControl_OnOpenGLDraw"
-                OpenGLInitialized="GlControl_OnOpenGLInitialized"
-                />
-        </WindowsFormsHost>-->
-
         <sharpGL:OpenGLControl 
             
             x:Name="glControl" 
-            FrameRate="120" 
             DrawFPS="True" 
             RenderContextType="FBO"
             
             OpenGLVersion="OpenGL4_4"
             OpenGLDraw="GlControl_OnOpenGLDraw"
-            OpenGLInitialized="GlControl_OnOpenGLInitialized" />
+            OpenGLInitialized="GlControl_OnOpenGLInitialized" 
+
+            MouseLeftButtonDown="MainWindow_OnMouseLeftButtonDown"
+            MouseMove="MainWindow_OnMouseMove"
+            />
 
     </DockPanel>
 </Window>

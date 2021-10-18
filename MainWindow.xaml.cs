@@ -38,18 +38,11 @@ namespace Simple3DViewer
     {
         private readonly IModelReader modelReader = new StlModelReader();
         private IRenderEngine renderEngine = new OpenGLRenderEngine();
+        private bool modelIsLoaded = false;
 
         public MainWindow()
         {
             InitializeComponent();
-            renderEngine.Model = modelReader.Read(@"C:\Users\walde\3D Objects\cube.stl");
-            //renderEngine.Model = new SimpleStlModel(1);
-            //renderEngine.Model.Facets[0].Vertexes = new Vector3[]
-            //{
-            //    new Vector3(0f, 0f, 50.5f),
-            //    new Vector3(0f, 0f, 0f),
-            //    new Vector3(50.5f, 0f, 0.0f), 
-            //};
         }
 
         private void CommandBinding_OnCanExecute(object sender, CanExecuteRoutedEventArgs e)
@@ -67,8 +60,10 @@ namespace Simple3DViewer
 
                 try
                 {
-                    // Метод Read нужно будет выполнять в отдельном потоке
                     var model = modelReader.Read(filePathToModel);
+                    renderEngine.Model = model;
+                    renderEngine.Init(glControl);
+                    modelIsLoaded = true;
                 }
                 catch (FormatException)
                 {
@@ -86,19 +81,12 @@ namespace Simple3DViewer
         {
             renderEngine.Width = (float) Width;
             renderEngine.Height = (float) Height;
-            
             renderEngine.Init(glControl);
         }
 
         private void GlControl_OnOpenGLDraw(object sender, OpenGLRoutedEventArgs args)
         {
             renderEngine.Draw();
-        }
-
-        private void MainWindow_OnSizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            renderEngine.Width = (float)Width;
-            renderEngine.Height = (float)Height;
         }
 
         private void MainWindow_OnMouseWheel(object sender, MouseWheelEventArgs e)
@@ -116,14 +104,17 @@ namespace Simple3DViewer
 
         private void MainWindow_OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            p = e.GetPosition(this);
+            if (modelIsLoaded)
+            {
+                p = e.GetPosition(this);
+            }
         }
 
         private Point p;
 
         private void MainWindow_OnMouseMove(object sender, MouseEventArgs e)
         {
-            if (e.LeftButton == MouseButtonState.Pressed)
+            if (e.LeftButton == MouseButtonState.Pressed && modelIsLoaded)
             {
                 var currentPos = e.GetPosition(this);
 
@@ -133,6 +124,13 @@ namespace Simple3DViewer
                 p = currentPos;
             }
 
+        }
+
+        private void MainWindow_OnSizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            renderEngine.Width = (float)Width;
+            renderEngine.Height = (float)Height;
+            ((OpenGLRenderEngine)renderEngine).SetViewPort((int)Width, (int)Height);
         }
     }
 }
